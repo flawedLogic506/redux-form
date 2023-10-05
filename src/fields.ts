@@ -4,14 +4,14 @@ export const fields = [
     placeholder: 'First Name',
     required: true,
     type: 'text',
-    maxLength: "20"
+    maxLength: 20
   },
   {
     id: 'lastName',
     placeholder: 'Last Name',
     required: true,
     type: 'text',
-    maxLength: "20"
+    maxLength: 20
   }],
   {
     id: 'email',
@@ -28,26 +28,26 @@ export const fields = [
     id: 'city',
     type: 'text',
     placeholder: 'City',
-    maxLength: "20"
+    maxLength: 20
   },
   {
     id: 'state',
     type: 'text',
     placeholder: 'State',
-    maxLength: "2"
+    maxLength: 2
   },
   {
     id: 'zip',
     type: 'tel',
     placeholder: 'Zip Code',
-    maxLength: "5"
+    maxLength: 5
   }],
   {
     id: 'phone',
     required: true,
     type: 'tel',
     placeholder: 'Phone Number',
-    maxLength: "15"
+    maxLength: 15
   },
   {
     id: 'jobTitle',

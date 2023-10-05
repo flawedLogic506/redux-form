@@ -1,28 +1,28 @@
 import { useState, useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useAppSelector, useAppDispatch } from '../store/hooks';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { resetForm } from '../store/formSlice';
 import { DataDisplayWrapper, DataCard, DataField, ItemLabel, ItemValue, Title, Subtitle } from '../components/DataCollectedComponents';
 import { Button } from '../components/FormComponents';
+import { Field, ReadOnlyField, Form } from '../types';
 
-const ThankYouPage = () => {
+const ThankYouPage: React.FC<{}> = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const form = useSelector(state => state.form);
+  const dispatch = useAppDispatch();
+  const form = useAppSelector(state => state.form);
   const fields = location.state.fields;
-
-  const [formData, setFormData] = useState([]);
+  const [formData, setFormData] = useState<ReadOnlyField[]>([]);
   
-  const formatFields = (fields, formValues) => {
+  const formatFields = (fields: Field[], formValues: Form) => {
     return fields.map((field) => {
       if (Array.isArray(field)) {
-        const fieldArray = [];
+        const fieldArray: ReadOnlyField[] = [];
         field.forEach((item) => {
           fieldArray.push({
             field: item.id,
             label: item.placeholder,
-            value: formValues[item.id]
+            value: formValues[item.id as keyof Form]
           })
         })
         return [...fieldArray]
@@ -30,20 +30,20 @@ const ThankYouPage = () => {
       return {
         field: field.id,
         label: field.placeholder,
-        value: formValues[field.id]
+        value: formValues[field.id as keyof Form]
       }
     })
   }
 
   const handleBackClick = () => {
-    dispatch(resetForm())
+    dispatch(resetForm(true))
     navigate('/');
   }
 
   useEffect(() => {
     if (form) {
       const formattedFields = formatFields(fields, form)
-      setFormData(formattedFields);
+      setFormData(formattedFields as ReadOnlyField[]);
     }
   }, [form, fields])
 
@@ -53,12 +53,12 @@ const ThankYouPage = () => {
         <Title>Your information has been submitted!</Title>
         <Subtitle>Review the information submitted below</Subtitle>
         {
-          formData.map((formField) => {
+          formData.map((formField: ReadOnlyField) => {
             if (Array.isArray(formField)) {
               return (
                 <DataField>
                   {
-                    formField.map(item => (
+                    formField.map((item: ReadOnlyField) => (
                       <>
                         <ItemLabel>{item.label} :</ItemLabel>
                         <ItemValue>{item.value}</ItemValue>
@@ -73,7 +73,7 @@ const ThankYouPage = () => {
                 {
                   formField.value && (
                     <>
-                      {!formField.label.includes('Describe') && <ItemLabel>{formField.label} :</ItemLabel>}
+                      {!formField.label?.includes('Describe') && <ItemLabel>{formField.label} :</ItemLabel>}
                       <ItemValue>{formField.value}</ItemValue>
                     </>
                   )

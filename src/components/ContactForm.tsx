@@ -1,32 +1,34 @@
 import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useAppSelector, useAppDispatch } from '../store/hooks';
 import { useNavigate } from 'react-router-dom';
-import { Formik, ErrorMessage, Form } from 'formik';
+import { Formik, ErrorMessage, Form, FormikErrors } from 'formik';
 import { updateInput } from '../store/formSlice';
 import { Input, InputWrapper, SelectInput, TextareaInput, MainContainer, Button, FieldWrapper, CustomError } from './FormComponents';
+import { Field, Form as FormType } from '../types';
+import { fields } from "../fields";
 
-const ContactForm = ({ fields }) => {
-  const dispatch = useDispatch();
+const ContactForm = () => {
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const form = useSelector(state => state.form)
+  const form = useAppSelector(state => state.form)
 
   // Controlled fields with store data
-  const handleInputChange = (type, setFieldValue) => (e) => {
+  const handleInputChange = (type: string, setFieldValue: any) => (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setFieldValue(type, value)
     dispatch(updateInput({ type, value }))
   }
 
   // API mock 
-  const postForm = (ms) => new Promise((res) => setTimeout(res, ms))
+  const postForm = (ms: number) => new Promise((res) => setTimeout(res, ms))
 
   return (
     <MainContainer>
       <Formik
         initialValues={form}
         validateOnChange={true}
-        validate={(values) => {
-          const errors = {};
+        validate={(values: FormType) => {
+          const errors: FormikErrors<FormType>  = {};
           if (!values.firstName) {
             errors.firstName = "* First name is required"
           }
@@ -64,15 +66,13 @@ const ContactForm = ({ fields }) => {
                       <InputWrapper key={fieldIndex}>
                         {field.map((item, ind) => (
                           <FieldWrapper key={ind}>
-                            <label htmlFor={item.id}></label>
                             <Input
-                              $doubleField
                               key={ind}
                               type={item.type}
                               name={item.id}
                               placeholder={item.placeholder ?? ''}
                               onChange={handleInputChange(item.id, setFieldValue)}
-                              value={form[`${item.id}`]}
+                              value={form[`${item.id}` as keyof FormType]}
                               maxLength={item.maxLength}
                             />
                             <ErrorMessage name={item.id} component={CustomError} />
@@ -90,12 +90,12 @@ const ContactForm = ({ fields }) => {
                               type="select"
                               as="select"
                               name={field.id}
-                              value={form[`${field.id}`]}
+                              value={form[`${field.id}` as keyof FormType]}
                               onChange={handleInputChange(field.id, setFieldValue)}
                             >
-                              <option key={field.id} defaultValue>{field.placeholder}</option>
+                              <option key={field.id}>{field.placeholder}</option>
                               {
-                                field.options.map((option, index) => <option key={index} value={option}>{option}</option>)
+                                field.options?.map((option: string, index: number) => <option key={index} value={option}>{option}</option>)
                               }
                             </SelectInput>
                             
@@ -109,7 +109,7 @@ const ContactForm = ({ fields }) => {
                                 as="textarea"
                                 type={field.type}
                                 name={field.id}
-                                value={form[`${field.id}`]}
+                                value={form[`${field.id}` as keyof FormType]}
                                 placeholder={field.placeholder ?? ''}
                                 onChange={handleInputChange(field.id, setFieldValue)}
                               />
@@ -121,7 +121,7 @@ const ContactForm = ({ fields }) => {
                                 key={fieldIndex}
                                 type={field.type}
                                 name={field.id}
-                                value={form[`${field.id}`]}
+                                value={form[`${field.id}` as keyof FormType]}
                                 placeholder={field.placeholder ?? ''}
                                 onChange={handleInputChange(field.id, setFieldValue)}
                                 maxLength={field.maxLength}

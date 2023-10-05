@@ -1,5 +1,9 @@
 import styled from "styled-components"
 
+interface FieldProps {
+  $doubleField: boolean;
+}
+
 export const MainContainer = styled.div`
   width: 100%;
   height: 100%;
@@ -20,7 +24,7 @@ export const MainContainer = styled.div`
   }
 `
 
-export const Form = styled.form`
+export const Form = styled.form<FieldProps>`
   width: ${props => props.$doubleField ? '50%' : '100%'}
   margin: 0 auto;
   padding: 25px;

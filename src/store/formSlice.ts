@@ -1,4 +1,5 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { PayloadAction, createSlice } from "@reduxjs/toolkit";
+import { Field, Form } from "../types";
 
 const initialValues = {
   firstName: '',
@@ -15,12 +16,12 @@ const initialValues = {
 
 export const FormSlice = createSlice({
   name: 'form',
-  initialState: initialValues,
+  initialState: initialValues as Form,
   reducers: {
     updateInput: (state, action) => {
-      state[action.payload.type] = action.payload.value;
+      state[action.payload.type as keyof Object] = action.payload.value;
     },
-    resetForm: (state, action) => {
+    resetForm: (state, action: PayloadAction<boolean>) => {
       return initialValues
     }
   }
